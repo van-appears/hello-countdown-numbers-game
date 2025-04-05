@@ -1,0 +1,27 @@
+{
+  "name": "hello-countdown-number-game",
+  "version": "0.0.1",
+  "description": "Solver for the Countdown number game",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "html"
+    ]
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "Countdown"
+  ],
+  "author": "gareth-robinson",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}
