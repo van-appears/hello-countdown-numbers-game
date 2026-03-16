@@ -9,5 +9,6 @@ java/.project
 java/.settings
 java/bin
 java/build
+python/countdown/__pycache__
 /bin/
 /target/
