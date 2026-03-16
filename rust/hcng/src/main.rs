@@ -1,31 +1,7 @@
+mod rpn_element;
+
 use std::env;
-
-#[derive(Debug, Clone)]
-enum RPNElement {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Number(i32),
-}
-
-impl RPNElement {
-    fn is_operator(&self) -> bool {
-        match *self {
-            RPNElement::Number(_) => false,
-            _ => true,
-        }
-    }
-    fn to_string(&self) -> String {
-        match *self {
-            RPNElement::Add => String::from("+"),
-            RPNElement::Subtract => String::from("-"),
-            RPNElement::Multiply => String::from("*"),
-            RPNElement::Divide => String::from("/"),
-            RPNElement::Number(x) => x.to_string()
-        }
-    }
-}
+use rpn_element::RPNElement;
 
 fn perform_countdown_rpn(args: &[RPNElement]) -> Result<i32, String> {
     let mut stack: Vec<i32> = vec![];
