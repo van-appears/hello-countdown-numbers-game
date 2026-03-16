@@ -1,7 +1,9 @@
 mod rpn_element;
+mod rpn_to_infix;
 
 use std::env;
 use rpn_element::RPNElement;
+use rpn_to_infix::rpn_to_infix;
 
 fn perform_countdown_rpn(args: &[RPNElement]) -> Result<i32, String> {
     let mut stack: Vec<i32> = vec![];
@@ -72,48 +74,6 @@ fn parse_arguments() -> Result<Vec<i32>, String> {
     }
 }
 
-#[derive(Debug, Clone)]
-struct Block {
-    symbol: String,
-    infix: String
-}
-
-fn can_match(val1: &String, val2: &String) -> bool {
-    !(val1 == "+" || val1 == "-" || val1 == "*" || val1 == "/") ||
-    ((val1 == "+" || val1 == "-") && (val2 == "+" || val2 == "-"))
-}
-
-fn result_to_infix(elements: &[RPNElement]) -> String {
-    let mut blocks: Vec<Block> = vec![];
-    for element in elements.iter() {
-        if element.is_operator() {
-            let second = blocks.pop().unwrap();
-            let first = blocks.pop().unwrap();
-            let mut first_string = first.infix;
-            if !can_match(&first.symbol, &element.to_string()) {
-                first_string = format!("({})", first_string);
-            }
-            let mut second_string = second.infix;
-            if !can_match(&second.symbol, &element.to_string()) {
-                second_string = format!("({})", second_string);
-            }
-            let block = Block {
-                symbol: element.to_string(),
-                infix: format!("{} {} {}", first_string, element.to_string(), second_string)
-            };
-            blocks.push(block);
-        } else {
-            let block = Block {
-                symbol: element.to_string(),
-                infix: element.to_string()
-            };
-            blocks.push(block);
-        }
-    }
-
-    blocks.pop().unwrap().infix
-}
-
 fn recurse(
     elements: &mut Vec<RPNElement>,
     remainder: &Vec<i32>,
@@ -125,7 +85,7 @@ fn recurse(
         match perform_countdown_rpn(&elements[0..next]) {
             Ok(result) => {
                 if result == target {
-                    return Some(result_to_infix(&elements[0..next]));
+                    return Some(rpn_to_infix(&elements[0..next]));
                 }
             }
             Err(_) => {
