@@ -1,54 +1,11 @@
+mod rpn_countdown_calculator;
 mod rpn_element;
 mod rpn_to_infix;
 
 use std::env;
+use rpn_countdown_calculator::calculate;
 use rpn_element::RPNElement;
 use rpn_to_infix::rpn_to_infix;
-
-fn perform_countdown_rpn(args: &[RPNElement]) -> Result<i32, String> {
-    let mut stack: Vec<i32> = vec![];
-    for element in args.iter() {
-        if element.is_operator() && stack.len() < 2 {
-            return Err(String::from("Not enough elements"));
-        }
-
-        match element {
-            RPNElement::Add => {
-                let result = stack.pop().unwrap() + stack.pop().unwrap();
-                stack.push(result);
-            }
-            RPNElement::Subtract => {
-                let second_value = stack.pop().unwrap();
-                let result = stack.pop().unwrap() - second_value;
-                if result < 0 {
-                    return Err(String::from("Countdown does not allow negatives"));
-                }
-                stack.push(result);
-            }
-            RPNElement::Multiply => {
-                let result = stack.pop().unwrap() * stack.pop().unwrap();
-                stack.push(result);
-            }
-            RPNElement::Divide => {
-                let second_value = stack.pop().unwrap();
-                let first_value = stack.pop().unwrap();
-                if second_value == 0 {
-                    return Err(String::from("Division by zero"));
-                }
-                if first_value % second_value != 0 {
-                    return Err(String::from("Fractional values not allowed"));
-                }
-                let result = first_value / second_value;
-                stack.push(result);
-            }
-            RPNElement::Number(val) => {
-                stack.push(*val);
-            }
-        }
-    }
-
-    Ok(stack.pop().unwrap())
-}
 
 fn parse_arguments() -> Result<Vec<i32>, String> {
     let args: Vec<String> = env::args().collect();
@@ -82,7 +39,7 @@ fn recurse(
     target: i32,
 ) -> Option<String> {
     if diff == 1 {
-        match perform_countdown_rpn(&elements[0..next]) {
+        match calculate(&elements[0..next]) {
             Ok(result) => {
                 if result == target {
                     return Some(rpn_to_infix(&elements[0..next]));
